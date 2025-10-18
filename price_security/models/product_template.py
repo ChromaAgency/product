@@ -38,7 +38,7 @@ class ProductTemplate(models.Model):
                     + arch.xpath("//field[@name='uom_id']")
                     + arch.xpath("//field[@name='seller_ids']")
                     + arch.xpath("//field[@name='variant_seller_ids']")
-                    + arch.xpath("//field[@name='uom_po_id']")
+                    + arch.xpath("//field[@name='uom_id']")
                     + arch.xpath("//field[@name='standard_price']")
                 )
                 for node in readonly_fields:
@@ -62,7 +62,7 @@ class ProductTemplate(models.Model):
                     arch.xpath("//div[@name='standard_price_uom']")
                     + arch.xpath("//field[@name='seller_ids']")
                     + arch.xpath("//field[@name='variant_seller_ids']")
-                    + arch.xpath("//field[@name='uom_po_id']")
+                    + arch.xpath("//field[@name='uom_id']")
                     + arch.xpath("//label[@for='standard_price']")
                     + arch.xpath("//field[@name='standard_price']")
                 )

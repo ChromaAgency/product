@@ -8,7 +8,7 @@ from odoo import api, fields, models
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    @api.depends("product_qty", "product_uom")
+    @api.depends("product_qty", "product_uom_id")
     def _compute_price_unit_and_date_planned_and_name(self):
         super()._compute_price_unit_and_date_planned_and_name()
 
@@ -20,7 +20,7 @@ class PurchaseOrderLine(models.Model):
                 partner_id=line.partner_id,
                 quantity=line.product_qty,
                 date=line.order_id.date_order and line.order_id.date_order.date(),
-                uom_id=line.product_uom,
+                uom_id=line.product_uom_id,
             )
 
             if not seller:
@@ -37,14 +37,14 @@ class PurchaseOrderLine(models.Model):
                 price_unit, line.currency_id, line.company_id, line.date_order or fields.Date.today()
             )
 
-            if seller and line.product_uom and seller.product_uom != line.product_uom:
-                price_unit = seller.product_uom._compute_price(price_unit, line.product_uom)
+            if seller and line.product_uom_id and seller.product_uom_id != line.product_uom_id:
+                price_unit = seller.product_uom_id._compute_price(price_unit, line.product_uom_id)
             line.price_unit = price_unit
 
     @api.model
-    def _prepare_purchase_order_line(self, product_id, product_qty, product_uom, company_id, supplier, po):
+    def _prepare_purchase_order_line(self, product_id, product_qty, product_uom_id, company_id, supplier, po):
         # Para casos como cuando se viene de reabastecimientos, usamos el nuevo net_price en vez de price
-        res = super()._prepare_purchase_order_line(product_id, product_qty, product_uom, company_id, supplier, po)
+        res = super()._prepare_purchase_order_line(product_id, product_qty, product_uom_id, company_id, supplier, po)
         price_unit = (
             self.env["account.tax"]._fix_tax_included_price_company(
                 supplier.net_price, product_id.supplier_taxes_id, self.taxes_id, company_id
